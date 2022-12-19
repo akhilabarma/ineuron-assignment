@@ -1,0 +1,86 @@
+//CREATE SALES_DATA_FINAL TABLE....
+
+use DEMO_DATABASE;
+create or replace table SALES_DATA_FINAL
+(
+  order_id string,
+  order_date string,
+  ship_date string,
+  ship_mode string,
+  customer_name varchar(50),
+  segment string,
+  state string,
+  country string,
+  market string,
+  region string,
+  product_id string,
+  category string,
+  sub_category string,
+  product_name string,
+  sales string,
+  quantity string,
+  discount string,
+  profit string,
+  shipping_cost string,
+  order_priority string,
+  year string
+);
+
+//LOADED SALES_DATA_FINAL.....
+select * FROM "DEMO_DATABASE"."PUBLIC"."SALES_DATA_FINAL";
+
+//CREATE PRIMARY KEY FOR ORDER_ID....
+
+alter table "DEMO_DATABASE"."PUBLIC"."SALES_DATA_FINAL" add  primary key(order_id);
+
+//EXTRACT SUBSTRING FROM ORDER_ID COLOUMN....
+
+select substr(order_id,9) FROM "DEMO_DATABASE"."PUBLIC"."SALES_DATA_FINAL";
+
+//ADD ANOTHER COLOUMN OREDER_ID1...
+
+alter table sales_data_final add order_id1 string;
+
+//UPDATE SALES_DATA_FINAL TABLE WITH NEW COLOUMN...
+
+update sales_data_final set order_id1=substr(order_id,9);
+
+//REMOVING OLD COLOUMNS AND ADD NEW COLOUMNS FOR CHANGING THE DATATYPE....
+
+alter table SALES_DATA_FINAL ADD column order_date1 date;
+
+update SALES_DATA_FINAL set order_date1  = try_to_date(order_date::varchar,'yyyy-mm-dd') ;
+
+alter table "DEMO_DATABASE"."PUBLIC"."SALES_DATA_FINAL" DROP column order_date;
+
+alter table SALES_DATA_FINAL ADD column ship_date1 date;
+
+update SALES_DATA_FINAL set ship_date1  = try_to_date(ship_date::varchar,'yyyy-mm-dd') ;
+
+select to_date(ship_date,'dd-mm-yyyy')  from SALES_DATA_FINAL limit 2;
+
+alter table "DEMO_DATABASE"."PUBLIC"."SALES_DATA_FINAL" DROP column ship_date;
+
+//EXTRACT DIFF FROM ORDER_DATE AND SHIP_DATE....
+
+select order_date1-ship_date1 from sales_data_final;
+
+select * from sales_data_final;
+
+//CASE STATEMENTS.....
+
+select case 
+     when (discount > 0) then 
+      'yes'
+     else 
+       'false'
+     end "flag" 
+ from sales_data_final;
+//............
+select case    
+    when(quantity <=3) THEN '9'
+     when(quantity > 3) AND (quantity <=6) THEN '4'
+     when(quantity <=10) AND (quantity >6) THEN '3'
+     when(quantity >10) THEN '2'
+     end "quantity_flag"
+     from sales_data_final;
